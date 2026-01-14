@@ -1,24 +1,20 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+// src/navigation/AppNavigator.tsx
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import HomeScreen from './screens/HomeScreen';
+import SelectFoodScreen from './screens/SelectFoodScreen';
+import type { RootStackParamList } from './types';
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
+export default function AppNavigator() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="SelectFood" component={SelectFoodScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
