@@ -1,4 +1,7 @@
-import AppNavigator from './_layout';
+// App.tsx (à la racine du projet)
+
+import React from 'react';
+import AppNavigator from './src/navigation/AppNavigator';
 import { StatusBar } from 'expo-status-bar';
 
 export default function App() {

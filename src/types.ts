@@ -1,9 +1,8 @@
 export type RootStackParamList = {
   Home: undefined;
   SelectFood: undefined;
-  Recipes: {
-    ingredients: string[];
-  };
+  Recipes: undefined;
+  AddFreshIngredients : undefined;
   RecipeDetail: {
     recipeId: string;
   };
