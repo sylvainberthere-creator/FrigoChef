@@ -1,7 +1,7 @@
-import { View, Text, Pressable } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { useState } from 'react';
-import { Ingredient } from '../utils/ingredientMapping';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useState } from "react";
+import { Modal, Pressable, Text, View } from "react-native";
+import { Ingredient } from "../utils/ingredientMapping";
 
 interface Props {
   ingredient: Ingredient;
@@ -16,81 +16,77 @@ export function AddToFridgeModal({
   onCancel,
   onConfirm,
 }: Props) {
-  const [step, setStep] = useState<'confirm' | 'date'>('confirm');
-
   const defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + defaultDays);
 
-  const [date, setDate] = useState(defaultDate);
+  const [date, setDate] = useState<Date>(defaultDate);
+  const [showPicker, setShowPicker] = useState(false);
 
   return (
-    <View className="absolute bg-black/40 justify-center items-center">
-      <View className="bg-white flex-1 w-11/12 rounded-2xl justify-center items-center p-5 gap-4">
+    <Modal transparent animationType="fade">
+      <View className="flex-1 bg-black/40 justify-center items-center">
+        <View className="bg-white w-11/12 rounded-2xl p-5 gap-4">
 
-        {/* STEP 1 — Confirmation */}
-        {step === 'confirm' && (
-          <>
-            <Text className="text-lg font-semibold text-center">
-              Ajouter {ingredient.label} au frigo ?
+          {/* Title */}
+          <Text className="text-lg font-semibold text-center">
+            Ajouter {ingredient.label}
+          </Text>
+
+          {/* Expiration date */}
+          <View className="items-center">
+            <Text className="text-gray-600">
+              Date de péremption estimée
+            </Text>
+            <Text className="text-base font-medium mt-1">
+              {date.toLocaleDateString("fr-FR")}
             </Text>
 
-            <View className="flex-row gap-3 mt-4">
-              <Pressable
-                onPress={onCancel}
-                className="flex-1 py-3 rounded-xl bg-gray-200 items-center"
-              >
-                <Text>Annuler</Text>
-              </Pressable>
+            <Pressable
+              onPress={() => setShowPicker(true)}
+              className="mt-2"
+            >
+              <Text className="text-[#2d7a3e] font-semibold">
+                Modifier la date
+              </Text>
+            </Pressable>
+          </View>
 
-              <Pressable
-                onPress={() => setStep('date')}
-                className="flex-1 py-3 rounded-xl bg-[#2d7a3e] items-center"
-              >
-                <Text className="text-white font-semibold">
-                  Ajouter
-                </Text>
-              </Pressable>
-            </View>
-          </>
-        )}
-
-        {/* STEP 2 — Date picker */}
-        {step === 'date' && (
-          <>
-            <Text className="text-lg font-semibold text-center">
-              Date de péremption
-            </Text>
-
+          {/* Date picker (conditional) */}
+          {showPicker && (
             <DateTimePicker
               value={date}
               mode="date"
               display="spinner"
               onChange={(_, selectedDate) => {
-                if (selectedDate) setDate(selectedDate);
+                if (selectedDate) {
+                  setDate(selectedDate);
+                  setShowPicker(false);
+                }
               }}
             />
+          )}
 
-            <View className="flex-row gap-3 mt-4">
-              <Pressable
-                onPress={onCancel}
-                className="flex-1 py-3 rounded-xl bg-gray-200 items-center"
-              >
-                <Text>Annuler</Text>
-              </Pressable>
+          {/* Actions */}
+          <View className="flex-row gap-3 mt-4">
+            <Pressable
+              onPress={onCancel}
+              className="flex-1 py-3 rounded-xl bg-gray-200 items-center"
+            >
+              <Text>Annuler</Text>
+            </Pressable>
 
-              <Pressable
-                onPress={() => onConfirm(date)}
-                className="flex-1 py-3 rounded-xl bg-[#2d7a3e] items-center"
-              >
-                <Text className="text-white font-semibold">
-                  Confirmer
-                </Text>
-              </Pressable>
-            </View>
-          </>
-        )}
+            <Pressable
+              onPress={() => onConfirm(date)}
+              className="flex-1 py-3 rounded-xl bg-[#2d7a3e] items-center"
+            >
+              <Text className="text-white font-semibold">
+                Ajouter au frigo
+              </Text>
+            </Pressable>
+          </View>
 
+        </View>
       </View>
-    </View>
+    </Modal>
   );
 }
